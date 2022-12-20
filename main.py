@@ -1,20 +1,18 @@
 import sys
 from random import randint
-from PyQt5 import uic  # Импортируем uic
 from PyQt5.QtWidgets import QApplication, QMainWindow
 from PyQt5.QtGui import QPainter, QColor
+from ui import Ui_MainWindow
 
 
 def except_hook(cls, exception, traceback):
     sys.__excepthook__(cls, exception, traceback)
 
 
-class YellowCircle(QMainWindow):
+class YellowCircle(QMainWindow, Ui_MainWindow):
     def __init__(self):
         super().__init__()
-        uic.loadUi('UI.ui', self)  # Загружаем дизайн
-        self.btn_add.clicked.connect(self.check_draw)
-
+        self.setupUi(self)
         self.value_draw = False
 
         self.btn_add.clicked.connect(self.check_draw)
@@ -30,13 +28,15 @@ class YellowCircle(QMainWindow):
             # Начинаем процесс рисования
             qp.begin(self)
             self.draw_circle(qp)
-            qp.end()  # Завершаем рисование
+            # Завершаем рисование
+            qp.end()
             self.value_draw = False
 
     def draw_circle(self, qp):
         # Задаем кисть
-        qp.setBrush(QColor("yellow"))
+        color = (randint(0, 255) for _ in range(3))  # случайный цвет
         radius = randint(10, 200)  # создаем радиус
+        qp.setBrush(QColor(*color))
         qp.drawEllipse(self.size().width() // 2 - (radius // 2), self.size().height() // 2 - (radius // 2),
                        radius, radius)  # рисуем круг по центру экрана
         qp.setBrush(QColor(0, 255, 0))
